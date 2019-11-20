@@ -1,12 +1,18 @@
 <template>
-	<div id="app">
-		<div id="nav">
-			<router-link to="/">Spacetagram</router-link>
-			<router-link to="/about">About</router-link>
-		</div>
-		<router-view />
-	</div>
+    <div id="app">
+        <router-view />
+    </div>
 </template>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600,800&display=swap');
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
 </style>
