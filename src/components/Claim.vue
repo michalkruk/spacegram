@@ -29,10 +29,21 @@ export default {
     font-size: 50px;
     margin: 0;
     margin-bottom: 2rem;
+    @media (min-width: 768px) {
+        font-size: 85px;
+    }
+    @media (min-width: 1024px) {
+        font-size: 110px;
+    }
 }
 
 .subclaim {
     font-size: 15px;
     text-align: center;
+    font-weight: 400;
+
+    @media (min-width: 768px) {
+        font-size: 20px;
+    }
 }
 </style>
