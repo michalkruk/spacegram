@@ -1,8 +1,25 @@
 <template>
-    <div class="wrapper">
-        <hero-image />
-        <Claim />
-        <search-input v-model="searchValue" @input="handleInput" />
+    <div :class="[{ flexStart: step === 1 }, 'wrapper']">
+        <transition name="slide">
+            <h4 class="logo" v-if="step === 1">Spacegram</h4>
+        </transition>
+        <transition name="fade">
+            <hero-image v-if="step === 0" />
+        </transition>
+        <Claim v-if="step === 0" />
+        <search-input
+            v-model="searchValue"
+            @input="handleInput"
+            :dark="step === 1"
+        />
+
+        <div class="results" v-if="results && !loading && step === 1">
+            <Item
+                v-for="item in results"
+                :item="item"
+                :key="item.data[0].nasa_id"
+            />
+        </div>
     </div>
 </template>
 
@@ -12,6 +29,7 @@ import debounce from 'lodash.debounce';
 import Claim from '@/components/Claim.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import HeroImage from '@/components/HeroImage.vue';
+import Item from '@/components/Item.vue';
 
 const API = 'https://images-api.nasa.gov';
 
@@ -20,20 +38,26 @@ export default {
     components: {
         Claim,
         SearchInput,
-        HeroImage
+        HeroImage,
+        Item
     },
     data() {
         return {
+            loading: false,
+            step: 0,
             searchValue: '',
             results: []
         };
     },
     methods: {
         handleInput: debounce(function() {
+            this.loading = true;
             axios
                 .get(`${API}/search?q=${this.searchValue}&media_type=image`)
                 .then(response => {
                     this.results = response.data.collection.items;
+                    this.loading = false;
+                    this.step = 1;
                 })
                 .catch(error => {
                     console.log(error);
@@ -52,10 +76,15 @@ export default {
     height: 100vh;
     min-height: 100vh;
     display: flex;
-    flex-flow: column wrap;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    position: relative;
+
+    &.flexStart {
+        justify-content: flex-start;
+    }
 }
 
 * {
@@ -66,5 +95,43 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: margin-top 0.3s ease;
+}
+
+.slide-enter,
+.slide-leave-to {
+    margin-top: -2rem;
+}
+
+.logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #1f1f1f;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    margin-top: 2rem;
+
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
 </style>
