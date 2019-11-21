@@ -18,8 +18,14 @@
                 v-for="item in results"
                 :item="item"
                 :key="item.data[0].nasa_id"
+                @click.native="handleModalOpen(item)"
             />
         </div>
+        <Modal
+            v-if="modalOpen"
+            :item="modalItem"
+            @closeModal="modalOpen = false"
+        />
     </div>
 </template>
 
@@ -30,7 +36,7 @@ import Claim from '@/components/Claim.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import HeroImage from '@/components/HeroImage.vue';
 import Item from '@/components/Item.vue';
-
+import Modal from '@/components/Modal.vue';
 const API = 'https://images-api.nasa.gov';
 
 export default {
@@ -39,17 +45,24 @@ export default {
         Claim,
         SearchInput,
         HeroImage,
-        Item
+        Item,
+        Modal
     },
     data() {
         return {
             loading: false,
             step: 0,
             searchValue: '',
-            results: []
+            results: [],
+            modalOpen: false,
+            modalItem: null
         };
     },
     methods: {
+        handleModalOpen(item) {
+            this.modalOpen = true;
+            this.modalItem = item;
+        },
         handleInput: debounce(function() {
             this.loading = true;
             axios
