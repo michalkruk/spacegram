@@ -21,6 +21,11 @@
                 @click.native="handleModalOpen(item)"
             />
         </div>
+        <div v-if="error" class="error">
+            <h1>
+                Unknown error
+            </h1>
+        </div>
         <Modal
             v-if="modalOpen"
             :item="modalItem"
@@ -55,7 +60,8 @@ export default {
             searchValue: '',
             results: [],
             modalOpen: false,
-            modalItem: null
+            modalItem: null,
+            error: false
         };
     },
     methods: {
@@ -73,6 +79,7 @@ export default {
                     this.step = 1;
                 })
                 .catch(error => {
+                    this.error = error;
                 });
         }, 500)
     }
