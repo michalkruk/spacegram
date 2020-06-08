@@ -73,7 +73,6 @@ export default {
                     this.step = 1;
                 })
                 .catch(error => {
-                    console.log(error);
                 });
         }, 500)
     }
